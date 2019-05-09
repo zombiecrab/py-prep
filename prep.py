@@ -373,7 +373,57 @@ print(H)
 
 #Graph
 class Vertex:
+    def __init__(self, key):
+        self.id = key
+        self.connections = {}
+
+    def addNeighbour(self, neighbour, weight=0):
+        self.connections[neighbour] = weight
+
+    def __str__(self):
+        return "ID:{}, connected to: {}".format(self.id, [e.id for e in self.connections])
+
+    def getConnections(self):
+        return self.connections.keys()
     
+    def getId(self):
+        return self.id
+    
+    def getWeight(self, neighbour):
+        return self.connections[neighbour]
+
+class Graph:
+    def __init__(self):
+        self.vertices = {}
+        self.numVertices = 0
+
+    def addVertex(self, key):
+        newVertex = Vertex(key)
+        self.numVertices += 1
+        self.vertices[key] = Vertex(key)
+
+        return newVertex
+
+    def getVertex(self, key):
+        return self.vertices.get(key, None)
+
+    def addEdge(self, vertexFrom, vertexTo, cost=0):
+        if vertexFrom not in self.vertices:
+            self.addVertex(vertexFrom)
+        if vertexTo not in self.vertices:
+            self.addVertex(vertexTo)
+
+        self.vertices[vertexFrom].addNeighbor(self.vertices[vertexTo], cost)
+
+    def getVertices(self):
+        return self.vertices.keys()
+
+    def __contains__(self, vertex):
+        return vertex in self.vertices
+    
+    def __iter__(self):
+        return iter(self.vertices.values())
+
 
 
 #Breadth First Search
