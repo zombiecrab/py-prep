@@ -413,7 +413,7 @@ class Graph:
         if vertexTo not in self.vertices:
             self.addVertex(vertexTo)
 
-        self.vertices[vertexFrom].addNeighbor(self.vertices[vertexTo], cost)
+        self.vertices[vertexFrom].addNeighbour(self.vertices[vertexTo], cost)
 
     def getVertices(self):
         return self.vertices.keys()
@@ -424,6 +424,26 @@ class Graph:
     def __iter__(self):
         return iter(self.vertices.values())
 
+
+g = Graph()
+
+for i in range(6):
+    g.addVertex(i)
+
+g.addEdge(0,1,5)
+g.addEdge(0,5,2)
+g.addEdge(1,2,4)
+g.addEdge(2,3,9)
+g.addEdge(3,4,7)
+g.addEdge(3,5,3)
+g.addEdge(4,0,1)
+g.addEdge(5,4,8)
+g.addEdge(5,2,1)
+
+
+for vertex in g:
+    for w in vertex.getConnections():
+        print("(%d, %d)" % (vertex.getId(), w.getId()))
 
 
 #Breadth First Search
