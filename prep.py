@@ -376,6 +376,9 @@ class Vertex:
     def __init__(self, key):
         self.id = key
         self.connections = {}
+        self.colour = "white"
+        self.distance = 0
+        self.predesesor = None
 
     def addNeighbour(self, neighbour, weight=0):
         self.connections[neighbour] = weight
@@ -445,8 +448,82 @@ for vertex in g:
     for w in vertex.getConnections():
         print("(%d, %d)" % (vertex.getId(), w.getId()))
 
-
 #Breadth First Search
+
+def buildGraphFromDict(dictonary):
+    d = {}
+    g = Graph()
+
+    dict_file = open(dictonary,'r')
+
+    for line in dict_file:
+        word = line[:-1] # Strips off new line
+
+        for i in range(len(word)):
+            bucket_key = word[:i]+"_"+word[i+1:]
+            
+            if bucket_key in d:
+                d[bucket_key].append(word)
+            else:
+                d[bucket_key] = [word]
+
+    for bucket_key in d.keys():
+        for word1 in d[bucket_key]:
+            for word2 in d[bucket_key]:
+                if word1 is not word2:
+                    g.addEdge(word1, word2)
+    return g
+
+
+def bfs(graph, start_vertex):
+    q = Queue()
+
+    start_vertex.distance = 0
+
+    q.enqueue(start_vertex)
+
+    while q.isEmpty() is not True:
+        current_vertex = q.dequeue()
+
+        for nbr in current_vertex.getConnections():
+            if nbr.colour == "white":
+                nbr.colour = "grey"
+                nbr.distance = current_vertex.distance + 1
+                nbr.predesesor = current_vertex
+                q.enqueue(nbr)
+        current_vertex.colour = "black"
+
+
+def traverseGraphToRoot(graph, destination):
+    dest_vertex = graph.getVertex(destination)
+    if dest_vertex is None:
+        return None
+
+    current_vertex = dest_vertex
+    done = False
+
+    while current_vertex.predesesor:
+        print(current_vertex.getId())
+            
+        current_vertex = current_vertex.predesesor
+
+    print(current_vertex.getId())
+
+
+
+
+
+graph = buildGraphFromDict("dictionary.txt")
+bfs(graph, graph.getVertex("sterns"))
+traverseGraphToRoot(graph, "cranks")
+
+
+
+
+
+
+
+
 #Depth First Search
 #Binary Search
 #Merge Sort
