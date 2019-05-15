@@ -604,10 +604,52 @@ knight_graph = buildKnightsGraph(8)
 knight_vertices = list(knight_graph.getVertices())
 #starting_vertex = knight_graph.getVertex(knight_vertices[0])
 starting_vertex = knight_graph.getVertex(posToId(0,0,8))
-touring_done = knightTour(0, [], starting_vertex,63)
-#Binary Search
+#touring_done = knightTour(0, [], starting_vertex,63) # uncomment for results
+
 #Merge Sort
+
+from random import randint
+
+
+def mergeSort(unsorted_list):
+    if len(unsorted_list) > 1:
+        midpoint = len(unsorted_list)//2
+        left = unsorted_list[:midpoint]
+        right = unsorted_list[midpoint:]
+
+        left = mergeSort(left)
+        right = mergeSort(right)
+
+        i=0
+        j=0
+        k=0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                unsorted_list[k]=left[i]
+                i=i+1
+            else:
+                unsorted_list[k]=right[j]
+                j=j+1
+            k=k+1
+
+        while i < len(left):
+            unsorted_list[k]=left[i]
+            i=i+1
+            k=k+1
+
+        while j < len(right):
+            unsorted_list[k]=right[j]
+            j=j+1
+            k=k+1
+    print("Merging ",unsorted_list)
+    return unsorted_list
+
+rand_list = [randint(1,100000) for x in range(10)]
+print("Starting list", rand_list)
+mergeSort(rand_list)
 #Quick Sort
+
+
 #Tree Insert / Find / etc
 
 
