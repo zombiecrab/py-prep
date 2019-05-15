@@ -395,6 +395,25 @@ class Vertex:
     def getWeight(self, neighbour):
         return self.connections[neighbour]
 
+    def setColour(self, colour):
+        self.colour = colour
+
+    def getColour(self):
+        return self.colour
+    
+    def setDistance(self, distance):
+        self.distance = distance
+
+    def getDistance(self):
+        return self.distance
+
+    def setPredesesor(self, predesesor):
+        self.predesesor = predesesor
+
+    def getPredesesor(self):
+        return self.predesesor
+
+
 class Graph:
     def __init__(self):
         self.vertices = {}
@@ -513,18 +532,79 @@ def traverseGraphToRoot(graph, destination):
 
 
 
-graph = buildGraphFromDict("dictionary.txt")
-bfs(graph, graph.getVertex("sterns"))
-traverseGraphToRoot(graph, "cranks")
-
-
-
-
-
+#graph = buildGraphFromDict("dictionary.txt")
+#bfs(graph, graph.getVertex("sterns"))
+#traverseGraphToRoot(graph, "cranks")
 
 
 
 #Depth First Search
+
+
+def buildKnightsGraph(board_size):
+    g = Graph()
+
+
+    for row in range(board_size):
+        for col in range(board_size):
+            node_id = posToId(row, col, board_size)
+            legal_positions = getLegalKnightPositions(row,col,board_size)
+
+            for new_pos in legal_positions:
+                g.addEdge(node_id, new_pos)
+    return g
+
+def posToId(row, col, board_size):
+    return (row * board_size) + col
+
+
+def getLegalKnightPositions(row,col,board_size):
+
+    found_moves = []
+    legal_moves = ((-1,-2),(-1,2),(-2,-1),(-2,1),
+                   ( 1,-2),( 1,2),( 2,-1),( 2,1))
+
+    for move in legal_moves:
+        new_row = row + move[0]
+        new_col = col + move[1]
+
+        if new_col >=0 and new_col < board_size and new_row >=0 and new_row < board_size:
+            found_moves.append(posToId(new_row, new_col, board_size))
+
+    return found_moves
+
+
+def knightTour(depth, path, current_vertex, depth_limit):
+    current_vertex.setColour("grey") # Mark as visitited but not complete
+    path.append(current_vertex)
+
+    if depth < depth_limit: # Make sure we have not reached our depth
+        nbrList = list(current_vertex.getConnections())
+
+        i = 0
+        done = False
+
+        while i < len(nbrList) and not done:
+            if nbrList[i].getColour() is "white":
+                done = knightTour(depth+1,path,nbrList[i],depth_limit)
+            i += 1
+
+        if not done:
+
+            path.pop()
+            current_vertex.setColour("white")
+
+    else:
+        done = True
+
+    #print("{}".format([x.id for x in path])) # uncomment for testing (noisy)
+    return done
+
+knight_graph = buildKnightsGraph(8)
+knight_vertices = list(knight_graph.getVertices())
+#starting_vertex = knight_graph.getVertex(knight_vertices[0])
+starting_vertex = knight_graph.getVertex(posToId(0,0,8))
+touring_done = knightTour(0, [], starting_vertex,63)
 #Binary Search
 #Merge Sort
 #Quick Sort
